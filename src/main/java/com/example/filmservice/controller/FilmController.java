@@ -2,22 +2,23 @@ package com.example.filmservice.controller;
 
 import com.example.filmservice.model.Film;
 import com.example.filmservice.service.FilmService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/v2.2/films")
+@RequiredArgsConstructor
 public class FilmController {
 
-    @Autowired
-    private FilmService filmService;
+    private final FilmService filmService;
 
     @RequestMapping
     public List<Film> getFilm() throws URISyntaxException {
+
         return filmService.findAll();
     }
+
 }

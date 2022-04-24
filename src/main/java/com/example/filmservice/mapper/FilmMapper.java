@@ -6,7 +6,9 @@ import com.example.filmservice.model.KinopoiskFilm;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
+@Component
 @Mapper(uses = {KinopoiskFilm.class})
 public interface FilmMapper {
     @Mapping(target = "id", ignore = true)
