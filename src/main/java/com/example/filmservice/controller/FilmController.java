@@ -15,7 +15,7 @@ public class FilmController {
 
     private final FilmService filmService;
 
-    @RequestMapping
+    @GetMapping
     public List<Film> getFilm() throws URISyntaxException {
 
         return filmService.findAll();
