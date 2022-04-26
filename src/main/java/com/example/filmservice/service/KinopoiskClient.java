@@ -1,33 +1,35 @@
 package com.example.filmservice.service;
 
+import com.example.filmservice.model.FilmDTO;
 import com.example.filmservice.model.Films;
-import com.example.filmservice.model.KinopoiskFilm;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import com.example.filmservice.model.FilmsDTO;
+
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+
 
 @Component
 public class KinopoiskClient {
 
-    HttpClient httpClient = HttpClientBuilder.create().build();
-    ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+    private final RestTemplate restTemplate;
 
-    private final RestTemplate restTemplate = new RestTemplate(requestFactory);
-    HttpHeaders httpHeaders = new HttpHeaders();
+    public KinopoiskClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
-    public List<KinopoiskFilm> getFilms() throws URISyntaxException {
 
+    public List<FilmDTO> getFilms() throws URISyntaxException {
+
+        HttpHeaders httpHeaders = new HttpHeaders();
         String url = "https://kinopoiskapiunofficial.tech/api/v2.2/films?type=FILM&ratingFrom=5&ratingTo=10&yearFrom=2002&yearTo=2021&page=1";
+
 
 
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -36,12 +38,12 @@ public class KinopoiskClient {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<Films> response = restTemplate.exchange(new URI(url), HttpMethod.GET, httpEntity, Films.class);
+        ResponseEntity<FilmsDTO> response = this.restTemplate.exchange(new URI(url), HttpMethod.GET, httpEntity, FilmsDTO.class);
 
-        if(response.getStatusCode() == HttpStatus.OK) {
-            return Objects.requireNonNull(response.getBody()).getFilmList();
+        if(response.getStatusCode() == HttpStatus.OK && response.getBody() != null && response.getBody().getItems() != null) {
+            return response.getBody().getItems();
         } else {
-            return null;
+            return new ArrayList<>();
         }
     }
 
