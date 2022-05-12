@@ -1,19 +1,18 @@
 package com.example.filmservice.service;
 
 import com.example.filmservice.model.FilmDTO;
-import com.example.filmservice.model.Films;
-import com.example.filmservice.model.FilmsDTO;
 
+import com.example.filmservice.model.Films;
+import com.example.filmservice.model.KinopoiskFilm;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Optional;
 
 @Component
 public class KinopoiskClient {
@@ -24,12 +23,9 @@ public class KinopoiskClient {
         this.restTemplate = restTemplate;
     }
 
-
-    public List<FilmDTO> getFilms() throws URISyntaxException {
+    public List<KinopoiskFilm> getFilms(FilmDTO filter) {
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        String url = "https://kinopoiskapiunofficial.tech/api/v2.2/films?type=FILM&ratingFrom=5&ratingTo=10&yearFrom=2002&yearTo=2021&page=1";
-
 
 
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -38,7 +34,7 @@ public class KinopoiskClient {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<FilmsDTO> response = this.restTemplate.exchange(new URI(url), HttpMethod.GET, httpEntity, FilmsDTO.class);
+        ResponseEntity<Films> response = restTemplate.exchange(generateUrl(filter), HttpMethod.GET, httpEntity, Films.class);
 
         if(response.getStatusCode() == HttpStatus.OK && response.getBody() != null && response.getBody().getItems() != null) {
             return response.getBody().getItems();
@@ -47,4 +43,32 @@ public class KinopoiskClient {
         }
     }
 
+    public String generateUrl(FilmDTO filter) {
+        String URL = "https://kinopoiskapiunofficial.tech/api/v2.2/films";
+        final String fullUrl = String.join("", URL);
+        final Optional<FilmDTO> optionalFilter = Optional.ofNullable(filter);
+        List<String> params = new ArrayList<>();
+        optionalFilter.map(FilmDTO::getType)
+                .ifPresent(type -> params.add(String.join("=", "type", type)));
+
+        optionalFilter.map(FilmDTO::getOrder)
+                .ifPresent(order -> params.add(String.join("=", "order", order)));
+
+        optionalFilter.map(FilmDTO::getRatingFrom)
+                .ifPresent(ratingFrom -> params.add(String.join("=", "ratingFrom", ratingFrom.toString())));
+
+        optionalFilter.map(FilmDTO::getRatingTo)
+                .ifPresent(ratingTo -> params.add(String.join("=", "ratingTo", ratingTo.toString())));
+
+        optionalFilter.map(FilmDTO::getYearFrom)
+                .ifPresent(yearFrom -> params.add(String.join("=", "yearFrom", yearFrom.toString())));
+
+        optionalFilter.map(FilmDTO::getYearTo)
+                .ifPresent(yearTo -> params.add(String.join("=", "yearTo", yearTo.toString())));
+
+        optionalFilter.map(FilmDTO::getPage)
+                .ifPresent(page -> params.add(String.join("=", "page", page.toString())));
+
+        return fullUrl;
+    }
 }

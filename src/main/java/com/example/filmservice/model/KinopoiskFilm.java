@@ -1,13 +1,19 @@
 package com.example.filmservice.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class KinopoiskFilm {
-    private int kinopoiskId;
-    private float ratingImdb;
-    private float ratingKinopoisk;
+
+    private Long id;
+    private Integer kinopoiskId;
     private String nameRu;
-    private int year;
-    private String decription;
+    private Integer year;
+    private Integer ratingKinopoisk;
+    private Integer ratingImdb;
+    private String description;
 }
