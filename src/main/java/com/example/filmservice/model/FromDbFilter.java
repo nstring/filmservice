@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class FromDbFilter {
 
-    private List<Integer> kinopoiskId;
+    private List<Long> kinopoiskId;
     private List<String> filmNames;
     private List<Integer> ratingKinopoisk;
     private List<Integer> ratingImdb;

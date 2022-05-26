@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KinopoiskFilm {
 
-    private Long id;
-    private Integer kinopoiskId;
+//    private Long id;
+    private Long kinopoiskId;
     private String nameRu;
     private Integer year;
     private Integer ratingKinopoisk;

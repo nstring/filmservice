@@ -21,6 +21,18 @@ public class FilmController {
         return filmService.findAll(filter);
     }
 
+    @PostMapping("/cinema")
+    public List<Film> saveFilm(FilmDTO filter) {
+//
+//        List<Film> filmList = filmService.findAll(filter);
+//        if (!repository.existsById(film.getKinopoiskId())) {
+//            return repository.save(filmList);
+//        }
+        return filmService.addFilm(filter);
+    }
+
+
+
     @GetMapping("/fromdb")
     public List<Film> getFilmsFromDb(FromDbFilter filter) {
         return filmService.getFilmsFromDb(filter);

@@ -1,7 +1,6 @@
 package com.example.filmservice.model;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -9,7 +8,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -17,26 +15,37 @@ import java.util.Objects;
 public class Film {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Integer kinopoiskId;
+    @Column(name = "kinopoiskId")
+    private Long kinopoiskId;
+
+    @Column(name = "nameRu")
     private String nameRu;
+
+    @Column(name = "year")
     private Integer year;
+
+    @Column(name = "ratingKinopoisk")
     private Integer ratingKinopoisk;
+
+    @Column(name = "ratingImdb")
     private Integer ratingImdb;
+
+    @Column(name = "description")
     private String description;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Film film = (Film) o;
-        return id != null && Objects.equals(id, film.id);
+        return Objects.equals(id, film.id) && Objects.equals(kinopoiskId, film.kinopoiskId) && Objects.equals(nameRu, film.nameRu) && Objects.equals(year, film.year) && Objects.equals(ratingKinopoisk, film.ratingKinopoisk) && Objects.equals(ratingImdb, film.ratingImdb) && Objects.equals(description, film.description);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id, kinopoiskId, nameRu, year, ratingKinopoisk, ratingImdb, description);
     }
 }

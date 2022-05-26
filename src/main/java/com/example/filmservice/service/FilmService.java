@@ -31,11 +31,9 @@ public class FilmService {
 
 
     public List<Film> findAll(FilmDTO filter) {
-            return kinopoiskClient.getFilms(filter).stream()
+        return kinopoiskClient.getFilms(filter).stream()
                     .map(filmMapper::toFilm)
-                    .peek(repository::save)
                     .collect(Collectors.toList());
-
     }
 
     public List<Film> getFilmsFromDb(FromDbFilter filter) {
@@ -78,5 +76,19 @@ public class FilmService {
 
         return query.getResultList();
         }
+
+    public List<Film> addFilm(FilmDTO filter) {
+        return kinopoiskClient.getFilms(filter).stream()
+                .map(filmMapper::toFilm)
+                .peek(this::saveFromDb)
+                .collect(Collectors.toList());
     }
+
+    public void saveFromDb(Film film) {
+        if (!repository.existsByKinopoiskId(film.getKinopoiskId())) {
+            repository.save(film);
+        }
+    }
+
+}
 
